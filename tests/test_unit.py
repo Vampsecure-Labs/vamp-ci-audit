@@ -6,28 +6,22 @@ Cubre: todos los checks CI-001 a CI-006, detección de plataforma,
        parseo YAML, serialización JSON/HTML.
 """
 
-from pathlib import Path
-from unittest.mock import MagicMock
 
-import pytest
 import yaml
 
 from vamp_ci_audit import (
-    Hallazgo,
     PATRON_EXPRESION_INYECTABLE,
-    PATRON_USO_SECRETS,
     PATRON_SHA_PIN,
+    PATRON_USO_SECRETS,
+    Hallazgo,
     check_ci001_secret_hardcodeado,
     check_ci002_pull_request_target,
     check_ci003_expression_injection,
     check_ci004_action_sin_pin_sha,
     check_ci005_permissions_write,
-    check_ci006_self_hosted_runner,
     detectar_plataforma,
     generar_json,
-    analizar_fichero,
 )
-
 
 # ---------------------------------------------------------------------------
 # Tests de utilidades de patrón

@@ -13,12 +13,11 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
 import sys
-from dataclasses import dataclass, field, asdict
+from collections.abc import Iterator
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Iterator, Optional
 
 try:
     import yaml
@@ -27,11 +26,11 @@ except ImportError:
     sys.exit(2)
 
 try:
-    from rich.console import Console
-    from rich.table import Table
-    from rich.panel import Panel
-    from rich.text import Text
     from rich import box
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.table import Table
+    from rich.text import Text
 except ImportError:
     print("ERROR: rich no está instalado. Instala con: pip install rich", file=sys.stderr)
     sys.exit(2)
@@ -275,9 +274,7 @@ def check_ci002_pull_request_target(ruta: Path, datos: dict,
         return hallazgos
 
     trigger_prt = False
-    if isinstance(on_config, dict):
-        trigger_prt = "pull_request_target" in on_config
-    elif isinstance(on_config, list):
+    if isinstance(on_config, (dict, list)):
         trigger_prt = "pull_request_target" in on_config
     elif isinstance(on_config, str):
         trigger_prt = on_config == "pull_request_target"
@@ -290,7 +287,7 @@ def check_ci002_pull_request_target(ruta: Path, datos: dict,
     if not isinstance(jobs, dict):
         return hallazgos
 
-    for nombre_job, job in jobs.items():
+    for job in jobs.values():
         if not isinstance(job, dict):
             continue
         steps = job.get("steps", [])
@@ -352,7 +349,7 @@ def check_ci003_expression_injection(ruta: Path, datos: dict,
     if not isinstance(jobs, dict):
         return hallazgos
 
-    for nombre_job, job in jobs.items():
+    for job in jobs.values():
         if not isinstance(job, dict):
             continue
         steps = job.get("steps", [])
@@ -415,7 +412,7 @@ def check_ci004_action_sin_pin_sha(ruta: Path, datos: dict,
     if not isinstance(jobs, dict):
         return hallazgos
 
-    for nombre_job, job in jobs.items():
+    for job in jobs.values():
         if not isinstance(job, dict):
             continue
         steps = job.get("steps", [])
@@ -639,7 +636,7 @@ def check_ci007_artifact_path_controlable(ruta: Path, datos: dict,
     if not isinstance(jobs, dict):
         return hallazgos
 
-    for nombre_job, job in jobs.items():
+    for job in jobs.values():
         if not isinstance(job, dict):
             continue
         steps = job.get("steps", [])
@@ -679,9 +676,9 @@ def check_ci007_artifact_path_controlable(ruta: Path, datos: dict,
                         linea=num_linea,
                         evidencia=f"{campo}: {valor[:80]}",
                         mitigacion=(
-                            f"Evitar usar datos del evento directamente en rutas de artefactos. "
-                            f"Usar valores estáticos o expresiones controladas como "
-                            f"github.run_id o github.sha para nombres únicos."
+                            "Evitar usar datos del evento directamente en rutas de artefactos. "
+                            "Usar valores estáticos o expresiones controladas como "
+                            "github.run_id o github.sha para nombres únicos."
                         ),
                         cis="CIS Control 18.5 — Usar análisis de código estático",
                         tipo_plataforma=plataforma,
@@ -709,7 +706,7 @@ def check_ci008_cache_key_controlable(ruta: Path, datos: dict,
     if not isinstance(jobs, dict):
         return hallazgos
 
-    for nombre_job, job in jobs.items():
+    for job in jobs.values():
         if not isinstance(job, dict):
             continue
         steps = job.get("steps", [])
@@ -739,7 +736,7 @@ def check_ci008_cache_key_controlable(ruta: Path, datos: dict,
                     hallazgos.append(Hallazgo(
                         id="CI-008",
                         severidad="MEDIUM",
-                        titulo=f"Cache key controlable por atacante — envenenamiento de caché",
+                        titulo="Cache key controlable por atacante — envenenamiento de caché",
                         descripcion=(
                             f"La {campo} de la caché incluye github.head_ref o datos del PR "
                             f"que un atacante puede controlar. Esto puede permitir cache "
@@ -806,7 +803,7 @@ def check_ci009_workflow_dispatch_sin_validacion(ruta: Path, datos: dict,
     if not isinstance(jobs, dict):
         return hallazgos
 
-    for nombre_job, job in jobs.items():
+    for job in jobs.values():
         if not isinstance(job, dict):
             continue
         steps = job.get("steps", [])
@@ -898,7 +895,7 @@ def check_ci010_github_token_write_innecesario(ruta: Path, datos: dict,
             hallazgos.append(Hallazgo(
                 id="CI-010",
                 severidad="LOW",
-                titulo=f"GITHUB_TOKEN con contents:write en job de solo build/test",
+                titulo="GITHUB_TOKEN con contents:write en job de solo build/test",
                 descripcion=(
                     f"El job '{nombre_job}' tiene permissions.contents: write pero sus steps "
                     f"parecen ser solo de checkout/build/test, sin publicación ni despliegue. "
@@ -948,7 +945,7 @@ def analizar_fichero(ruta: Path, severidad_minima: str = "LOW") -> list[Hallazgo
     # Leer contenido del fichero
     try:
         contenido = ruta.read_text(encoding="utf-8", errors="replace")
-    except OSError as e:
+    except OSError:
         return hallazgos
 
     lineas = contenido.splitlines()
@@ -1280,7 +1277,7 @@ def cmd_scan(args: argparse.Namespace) -> int:
             console.print(f"[green]Resultados guardados en:[/green] {salida}", highlight=False)
 
     # Exit code
-    tiene_critico_alto = any(
+    any(
         h.severidad in ("CRITICAL", "HIGH") for h in todos_hallazgos
     )
     return 1 if todos_hallazgos else 0

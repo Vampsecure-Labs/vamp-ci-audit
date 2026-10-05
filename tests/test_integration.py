@@ -5,12 +5,9 @@ test_integration.py — Tests de integración para vamp_ci_audit
 Ejercita analizar_fichero() contra workflows YAML temporales completos.
 """
 
-from pathlib import Path
 
-import pytest
 
 from vamp_ci_audit import analizar_fichero, encontrar_workflows
-
 
 # ---------------------------------------------------------------------------
 # Tests de integración (5 mínimos)
