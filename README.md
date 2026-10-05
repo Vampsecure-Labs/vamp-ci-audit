@@ -1,5 +1,7 @@
 # vamp-ci-audit
 
+  <img src="https://github.com/Vampsecure-Labs/vamp-ci-audit/actions/workflows/ci.yml/badge.svg" alt="CI"/>
+
 **CI/CD pipeline security auditor** — GitHub Actions, GitLab CI and Forgejo Actions
 
 © VampSecure Studios — VampSecure Labs Security Research Division  
