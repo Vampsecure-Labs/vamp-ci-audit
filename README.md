@@ -156,6 +156,7 @@ AGPL-3.0-only — See [LICENSE](https://www.gnu.org/licenses/agpl-3.0.html)
 
 | Version | Main changes |
 |---------|-------------|
+| v1.1 | Each finding now carries its MITRE ATT&CK technique (`mitre` field in JSON): supply-chain checks → T1195.002, injection → T1059, credentials → T1552.001, permissions → T1098. The comparison table advertised T1195.002 mapping; the output now delivers it. |
 | v1.1 | Bilingual README (EN/ES) |
 | v1.0 | Initial release — GitHub Actions, GitLab CI and Forgejo Actions support |
 
@@ -313,6 +314,7 @@ AGPL-3.0-only — Ver [LICENSE](https://www.gnu.org/licenses/agpl-3.0.html)
 
 | Versión | Cambios principales |
 |---------|---------------------|
+| v1.1 | Cada hallazgo lleva ahora su técnica MITRE ATT&CK (campo `mitre` en JSON): checks de supply-chain → T1195.002, inyección → T1059, credenciales → T1552.001, permisos → T1098. La tabla comparativa anunciaba el mapeo T1195.002; la salida ahora lo entrega. |
 | v1.1 | README bilingüe (EN/ES) |
 | v1.0 | Release inicial — soporte GitHub Actions, GitLab CI y Forgejo Actions |
 

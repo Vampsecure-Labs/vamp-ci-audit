@@ -295,3 +295,21 @@ class TestGenararJson:
         data = _json.loads(resultado)
         assert data["total_hallazgos"] == 1
         assert data["resumen"]["CRITICAL"] == 1
+
+
+class TestMitreMapping:
+    """v1.1: cada hallazgo recibe su técnica MITRE ATT&CK (claim T1195.002)."""
+    def test_attach_mitre(self):
+        from vamp_ci_audit import Hallazgo, _attach_mitre, MITRE_POR_ID
+        hs = [Hallazgo(id=i, severidad="HIGH", titulo="t", descripcion="d",
+                       archivo="wf.yml", linea=1, evidencia="e", mitigacion="m", cis="c")
+              for i in ("CI-002", "CI-004", "CI-003", "CI-001")]
+        _attach_mitre(hs)
+        got = {h.id: h.mitre for h in hs}
+        assert got["CI-004"] == "T1195.002"
+        assert got["CI-002"] == "T1195.002"
+        assert got["CI-003"] == "T1059"
+        assert got["CI-001"] == "T1552.001"
+    def test_todos_los_ids_mapeados(self):
+        from vamp_ci_audit import MITRE_POR_ID
+        assert {f"CI-{n:03d}" for n in range(1, 11)} <= set(MITRE_POR_ID)

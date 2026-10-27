@@ -39,7 +39,7 @@ except ImportError:
 # Constantes y configuración
 # ---------------------------------------------------------------------------
 
-HERRAMIENTA_VERSION = "1.0"
+HERRAMIENTA_VERSION = "1.1"
 HERRAMIENTA_NOMBRE = "vamp-ci-audit"
 
 # Colores por severidad para la consola Rich
@@ -105,6 +105,29 @@ class Hallazgo:
     mitigacion: str
     cis: str
     tipo_plataforma: str = "desconocido"
+    mitre: str = ""   # Técnica MITRE ATT&CK asociada (p.ej. "T1195.002")
+
+
+# Mapeo de cada check CI/CD a su técnica MITRE ATT&CK (por id de hallazgo).
+MITRE_POR_ID: dict[str, str] = {
+    "CI-001": "T1552.001",   # Unsecured Credentials: Credentials In Files
+    "CI-002": "T1195.002",   # Compromise Software Supply Chain
+    "CI-003": "T1059",       # Command and Scripting Interpreter
+    "CI-004": "T1195.002",   # Supply chain — action sin SHA pin
+    "CI-005": "T1098",       # Account Manipulation (permisos excesivos)
+    "CI-006": "T1195.002",   # Supply chain — runner self-hosted sin restricción
+    "CI-007": "T1195.002",   # Supply chain — artefacto controlable
+    "CI-008": "T1195.002",   # Supply chain — envenenamiento de caché
+    "CI-009": "T1059",       # Command and Scripting Interpreter
+    "CI-010": "T1098",       # Account Manipulation (token con write)
+}
+
+
+def _attach_mitre(hallazgos: "list[Hallazgo]") -> None:
+    """Asigna a cada hallazgo su técnica MITRE ATT&CK según su id de check."""
+    for h in hallazgos:
+        if not h.mitre:
+            h.mitre = MITRE_POR_ID.get(h.id, "T1195.002")
 
 
 # ---------------------------------------------------------------------------
@@ -1246,6 +1269,8 @@ def cmd_scan(args: argparse.Namespace) -> int:
     for fichero in ficheros:
         hallazgos_fichero = analizar_fichero(fichero, severidad_min)
         todos_hallazgos.extend(hallazgos_fichero)
+
+    _attach_mitre(todos_hallazgos)
 
     formato = getattr(args, "format", "table")
     salida = getattr(args, "output", None)
