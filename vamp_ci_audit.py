@@ -39,7 +39,7 @@ except ImportError:
 # Constantes y configuración
 # ---------------------------------------------------------------------------
 
-HERRAMIENTA_VERSION = "1.2"
+HERRAMIENTA_VERSION = "1.3"
 HERRAMIENTA_NOMBRE = "vamp-ci-audit"
 
 # Colores por severidad para la consola Rich

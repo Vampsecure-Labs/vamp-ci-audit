@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vamp-ci-audit"
-version = "1.2"
+version = "1.3"
 description = "CI/CD pipeline security auditor: GitHub Actions, GitLab CI and Forgejo Actions"
 readme = "README.md"
 license = { text = "AGPL-3.0-only" }

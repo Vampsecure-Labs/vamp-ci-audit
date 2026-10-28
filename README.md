@@ -86,7 +86,7 @@ vamp-ci-audit scan . --severity HIGH
 
 ```bash
 $ vamp-ci-audit scan .github/workflows/
-  vamp-ci-audit v1.2 — CI/CD Pipeline Security Auditor
+  vamp-ci-audit v1.3 — CI/CD Pipeline Security Auditor
   Scanning: .github/workflows/ (3 files found)
   ────────────────────────────────────────────────────────────
 
@@ -244,7 +244,7 @@ vamp-ci-audit scan . --severity HIGH
 
 ```bash
 $ vamp-ci-audit scan .github/workflows/
-  vamp-ci-audit v1.2 — CI/CD Pipeline Security Auditor
+  vamp-ci-audit v1.3 — CI/CD Pipeline Security Auditor
   Scanning: .github/workflows/ (3 files found)
   ────────────────────────────────────────────────────────────
 
